@@ -1,87 +1,73 @@
-console.log("Hello world!")
+// let namaSiswa1 = "Fikri"
+// let namaSiswa2 = "Dicky"
+// let namaSiswa3 = "Rahmat"
 
-// Variable
+// console.log(namaSiswa1)
+// console.log(namaSiswa2)
+// console.log(namaSiswa3)
 
-// var
-// let
-// const - constant
+// array
+// let namaSiswa = ['Fikri', 'Dicky', 'Rahmat']
 
-// var - bisa di deklarasikan ulang
-var name = "Abel Dustin"
-var name = "Faiq Ulul"
+// console.log(namaSiswa)
+// console.log(namaSiswa[0])
+// console.log(namaSiswa[1])
 
-// let - gak bisa di deklarasikan ulang
-let food = "Seblak"
-food = "Martabak"
-
-// const - gak bisa di deklarasikan ulang dan gak bisa di ubah value nya
 // object
-const drink = "es teh manis"
-// drink = "es teh manis panas"
+// let nama = "Ade"
+// let alamat = "Tangerang Selatan"
+// let umur = 20
 
-// Data Type
+// console.log(nama)
+// console.log(alamat)
+// console.log(umur)
 
-// string - "Tere Liye" | "Bpk Budi"
-// number - 100 | 10.00
-// boolean - true/false
+// let dataPribadi = {
+//     nama: "Ade",
+//     alamat: "Tangerang Selatan",
+//     Umur: 20
+// }
 
-var school = "SMP Negeri 17 Jakarta" //string
+// console.log(dataPribadi)
+// console.log(dataPribadi.alamat)
 
-var age = 24 // number
+// array of object
+// let dataPersonal = [
+//     {
+//         nama: "Rizky",
+//         alamat: "Jakarta"
+//     },
+//     {
+//         nama: "Ade",
+//         alamat: "Tangerang Selatan"
+//     },
+//     {
+//         nama: "Rifai",
+//         alamat: "Bandung"
+//     }
+// ]
 
-var isStudying = false
+// console.log(dataPersonal)
+// console.log(dataPersonal[3])
 
-// camelcase
-var veggies = "kangkung"
+// mengisi data
 
-const foodGradeQuality = "A"
+let data = []
 
-// console.log(foodGradeQuality)
+function addData() {
+    let person = {
+        title: "Harga Cabe Naik",
+        content: "Harga cabe sedang melunjak tinggi"
+    }
 
-// console.log("Hi, my name is Abel Dustin")
-// console.log("Hi, my name is "+name)
-// console.log("Hi, my name is", name, "I like to eat", veggies)
-// console.log(`Hi, my name is ${name}, I like to eat ${veggies}`)
-
-// operator
-let x = 5.5
-let y = 4.5
-
-let result = x + y
-// console.log(result)
-
-// condition
-// if - else if - else
-let word = "60"
-
-if (word == 60) {
-    // console.log("Kok kenal?")
-} else {
-    // console.log("Maaf gak kenal")
+    data.push(person)
+    console.log(data)
 }
 
-// function
-function Aritmatika() {
-    let bilanganPertama = 50
-    let bilanganKedua = 70
-
-    let result = bilanganPertama + bilanganKedua
-
-    console.log(result)
+function looping() {
+    for(let i = 1; i > 1; i++) {
+        console.log(i)
+    }
 }
 
-Aritmatika()
-
-function Aritmatika2(bilanganPertama, bilanganKedua) {
-    let result  = bilanganPertama + bilanganKedua
-
-    console.log(result)
-}
-
-Aritmatika2(40, 80)
-
-function myName(name) {
-    console.log(name)
-}
-
-myName("Achmad Rifai")
+looping()
