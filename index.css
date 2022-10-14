@@ -1,9 +1,12 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap');
+
 * {
     text-decoration: none;
 }
 
 body {
     margin: 0;
+    font-family: 'Poppins', sans-serif;
 }
 
 nav {
@@ -11,7 +14,8 @@ nav {
     display: flex;
     align-items: center;
     height: 10vh;
-    background-color: pink;
+    background-color: white;
+    box-shadow: 0 0 10px black;
 }
 
 nav ul {
