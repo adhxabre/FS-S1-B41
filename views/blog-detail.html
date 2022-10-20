@@ -17,18 +17,17 @@
         </nav>
 
         <!-- Blog -->
-        {{.Id}}
         <div class="detail-blog">
             <div class="detail-blog-card">
                 <h1 class="detail-blog-title">
-                    {{.Title}}
+                    {{.Blog.Title}}
                 </h1>
                 <div class="detail-blog-author">
-                    12 Jul 2021 22:30 WIB | Ichsan Emrald Alamsyah
+                    {{.Blog.Post_date}} | {{.Blog.Author}}
                 </div>
                 <img src="/public/img/1086711.png" alt="photo" />
                 <p class="detail-blog-content">
-                    {{.Content}}
+                    {{.Blog.Content}}
                 </p>
             </div>
         </div>
