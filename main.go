@@ -1,6 +1,8 @@
 package main
 
 import (
+	"context"
+	"day-9/connection"
 	"fmt"
 	"html/template"
 	"log"
@@ -16,32 +18,33 @@ var Data = map[string]interface{}{
 }
 
 type Blog struct {
-	Title     string
-	Post_date string
-	Author    string
-	Content   string
-	Duration  string
+	Id          int
+	Title       string
+	Post_date   time.Time
+	Format_date string
+	Author      string
+	Content     string
 }
 
 var Blogs = []Blog{
-	{
-		Title:     "Pasar Coding Di Indonesia Dinilai Masih Menjanjikan",
-		Post_date: "20 October 2022 22:30 WIB",
-		Author:    "Abel Dustin",
-		Content:   "Test",
-		Duration:  "2 Bulan",
-	},
-	{
-		Title:     "Pasar Ikan Di Indonesia Dinilai Masih Menjanjikan",
-		Post_date: "20 October 2022 22:30 WIB",
-		Author:    "Abel Dustin",
-		Content:   "Test",
-		Duration:  "2 Bulan",
-	},
+	// {
+	// 	Title:     "Pasar Coding Di Indonesia Dinilai Masih Menjanjikan",
+	// 	Post_date: "20 October 2022 22:30 WIB",
+	// 	Author:    "Abel Dustin",
+	// 	Content:   "Test",
+	// },
+	// {
+	// 	Title:     "Pasar Ikan Di Indonesia Dinilai Masih Menjanjikan",
+	// 	Post_date: "20 October 2022 22:30 WIB",
+	// 	Author:    "Abel Dustin",
+	// 	Content:   "Test",
+	// },
 }
 
 func main() {
 	route := mux.NewRouter()
+
+	connection.DatabaseConnect()
 
 	// route path folder untuk public
 	route.PathPrefix("/public/").Handler(http.StripPrefix("/public/", http.FileServer(http.Dir("./public"))))
@@ -104,8 +107,31 @@ func blog(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// var query = "SELECT id, title, content FROM tb_blog"
+
+	rows, _ := connection.Conn.Query(context.Background(), "SELECT id, title, content FROM tb_blog")
+
+	var result []Blog
+
+	for rows.Next() {
+		var each = Blog{}
+
+		err := rows.Scan(&each.Id, &each.Title, &each.Content)
+		if err != nil {
+			fmt.Println(err.Error())
+			return
+		}
+
+		each.Author = "Abel Dustin"
+		// each.Format_date = each.Post_date.Format("2 January 2006")
+
+		result = append(result, each)
+	}
+
+	fmt.Println(result)
+
 	respData := map[string]interface{}{
-		"Blogs": Blogs,
+		"Blogs": result,
 	}
 
 	w.WriteHeader(http.StatusOK)
@@ -174,11 +200,9 @@ func addBlog(w http.ResponseWriter, r *http.Request) {
 	var content = r.PostForm.Get("inputContent")
 
 	var newBlog = Blog{
-		Title:     title,
-		Content:   content,
-		Author:    "Abel Dustin",
-		Post_date: time.Now().String(),
-		Duration:  "2 Bulan",
+		Title:   title,
+		Content: content,
+		Author:  "Abel Dustin",
 	}
 
 	//Blogs.push(newBlog)
