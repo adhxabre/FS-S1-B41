@@ -111,10 +111,10 @@ func blog(w http.ResponseWriter, r *http.Request) {
 
 	rows, _ := connection.Conn.Query(context.Background(), "SELECT id, title, content FROM tb_blog")
 
-	var result []Blog
+	var result []Blog // array data
 
 	for rows.Next() {
-		var each = Blog{}
+		var each = Blog{} // manggil struct
 
 		err := rows.Scan(&each.Id, &each.Title, &each.Content)
 		if err != nil {
