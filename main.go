@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	"day-9/connection"
+	"day-10/connection"
 	"fmt"
 	"html/template"
 	"log"
@@ -54,10 +54,10 @@ func main() {
 	route.HandleFunc("/", home).Methods("GET")
 	route.HandleFunc("/contact", contact).Methods("GET")
 	route.HandleFunc("/blog", blog).Methods("GET")
-	route.HandleFunc("/blog-detail/{index}", blogDetail).Methods("GET")
+	route.HandleFunc("/blog-detail/{id}", blogDetail).Methods("GET")
 	route.HandleFunc("/form-blog", formAddBlog).Methods("GET")
 	route.HandleFunc("/add-blog", addBlog).Methods("POST")
-	route.HandleFunc("/delete-blog/{index}", deleteBlog).Methods("GET")
+	route.HandleFunc("/delete-blog/{id}", deleteBlog).Methods("GET")
 
 	fmt.Println("Server running on port 5000")
 	http.ListenAndServe("localhost:5000", route)
@@ -109,21 +109,21 @@ func blog(w http.ResponseWriter, r *http.Request) {
 
 	// var query = "SELECT id, title, content FROM tb_blog"
 
-	rows, _ := connection.Conn.Query(context.Background(), "SELECT id, title, content FROM tb_blog")
+	rows, _ := connection.Conn.Query(context.Background(), "SELECT id, title, content, post_date, author FROM tb_blog")
 
 	var result []Blog // array data
 
 	for rows.Next() {
 		var each = Blog{} // manggil struct
 
-		err := rows.Scan(&each.Id, &each.Title, &each.Content)
+		err := rows.Scan(&each.Id, &each.Title, &each.Content, &each.Post_date, &each.Author)
 		if err != nil {
 			fmt.Println(err.Error())
 			return
 		}
 
-		each.Author = "Abel Dustin"
-		// each.Format_date = each.Post_date.Format("2 January 2006")
+		// each.Author = "Abel Dustin"
+		each.Format_date = each.Post_date.Format("2 January 2006")
 
 		result = append(result, each)
 	}
@@ -141,6 +141,8 @@ func blog(w http.ResponseWriter, r *http.Request) {
 func blogDetail(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 
+	id, _ := strconv.Atoi(mux.Vars(r)["id"])
+
 	var tmpl, err = template.ParseFiles("views/blog-detail.html")
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -150,18 +152,17 @@ func blogDetail(w http.ResponseWriter, r *http.Request) {
 
 	var BlogDetail = Blog{}
 
-	index, _ := strconv.Atoi(mux.Vars(r)["index"])
-
-	for i, data := range Blogs {
-		if index == i {
-			BlogDetail = Blog{
-				Title:     data.Title,
-				Content:   data.Content,
-				Post_date: data.Post_date,
-				Author:    data.Author,
-			}
-		}
+	err = connection.Conn.QueryRow(context.Background(), "SELECT id, title, content, post_date, author FROM tb_blog WHERE id=$1", id).Scan(
+		&BlogDetail.Id, &BlogDetail.Title, &BlogDetail.Content, &BlogDetail.Post_date, &BlogDetail.Author,
+	)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte("message : " + err.Error()))
+		return
 	}
+
+	// BlogDetail.Author = "Abel Dustin"
+	BlogDetail.Format_date = BlogDetail.Post_date.Format("2 January 2006")
 
 	data := map[string]interface{}{
 		"Blog": BlogDetail,
@@ -198,26 +199,31 @@ func addBlog(w http.ResponseWriter, r *http.Request) {
 
 	var title = r.PostForm.Get("inputTitle")
 	var content = r.PostForm.Get("inputContent")
+	var author = r.PostForm.Get("inputAuthor")
 
-	var newBlog = Blog{
-		Title:   title,
-		Content: content,
-		Author:  "Abel Dustin",
+	_, err = connection.Conn.Exec(context.Background(), "INSERT INTO tb_blog(title, content, image, author) VALUES ($1, $2, 'images.png', $3)", title, content, author)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte("message : " + err.Error()))
+		return
 	}
-
-	//Blogs.push(newBlog)
-	Blogs = append(Blogs, newBlog)
-	// fmt.Println(Blogs)
 
 	http.Redirect(w, r, "/blog", http.StatusMovedPermanently)
 }
 
 func deleteBlog(w http.ResponseWriter, r *http.Request) {
-	index, _ := strconv.Atoi(mux.Vars(r)["index"])
-	fmt.Println(index)
+	id, _ := strconv.Atoi(mux.Vars(r)["id"])
+	fmt.Println(id)
 
-	Blogs = append(Blogs[:index], Blogs[index+1:]...)
-	fmt.Println(Blogs)
+	// Blogs = append(Blogs[:index], Blogs[index+1:]...)
+	// fmt.Println(Blogs)
+
+	_, err := connection.Conn.Exec(context.Background(), "DELETE FROM tb_blog WHERE id=$1", id)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte("message : " + err.Error()))
+		return
+	}
 
 	http.Redirect(w, r, "/blog", http.StatusFound)
 }

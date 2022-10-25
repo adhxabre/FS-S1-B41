@@ -29,15 +29,15 @@
                     <div class="blog-content">
                         <div class="btn-group">
                             <a href="#" class="btn-edit">Edit Post</a>
-                            <a href="/delete-blog/{{$index}}" class="btn-post">Delete Blog</a>
+                            <a href="/delete-blog/{{$data.Id}}" class="btn-post">Delete Blog</a>
                         </div>
                         <h1>
-                            <a href="/blog-detail/{{$index}}" target="_blank">
-                                {{$data.Title}}
+                            <a href="/blog-detail/{{$data.Id}}" target="_blank">
+                                {{$data.Title}} | {{$data.Id}}
                             </a>
                         </h1>
                         <div class="detail-blog-content">
-                            {{$data.Post_date}} | {{$data.Author}} | Index {{$index}}
+                            {{$data.Format_date}} | {{$data.Author}}
                         </div>
                         <p>
                             {{$data.Content}}
