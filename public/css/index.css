@@ -9,52 +9,6 @@ body {
     font-family: 'Poppins', sans-serif;
 }
 
-nav {
-    background-color: #fefefe;
-    display: flex;
-    align-items: center;
-    height: 10vh;
-    background-color: white;
-    box-shadow: 0 0 10px black;
-    justify-content: space-between;
-}
-
-nav ul {
-    display: flex;
-    list-style-type: none;
-    align-items: center;
-}
-
-nav ul li {
-    margin-right: 15px;
-    font-weight: bold;
-    font-size: 25px;
-}
-
-nav ul li img {
-    width: 75px;
-    border-radius: 75px;
-}
-
-nav ul li a {
-    color: black;
-}
-
-.nav-left {
-}
-
-.nav-right {
-    text-align: end;
-    margin-right: 50px;
-}
-
-.nav-right a {
-    background-color: orangered;
-    padding: 10px 30px;
-    color: white;
-    border-radius: 15px;
-}
-
 .card-left {
     flex: 40%;
 }

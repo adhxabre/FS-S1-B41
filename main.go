@@ -132,6 +132,16 @@ func home(w http.ResponseWriter, r *http.Request) {
 func contact(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 
+	var store = sessions.NewCookieStore([]byte("SESSION_KEY"))
+	session, _ := store.Get(r, "SESSION_KEY")
+
+	if session.Values["IsLogin"] != true {
+		Data.IsLogin = false
+	} else {
+		Data.IsLogin = session.Values["IsLogin"].(bool)
+		Data.UserName = session.Values["Name"].(string)
+	}
+
 	var tmpl, err = template.ParseFiles("views/contact.html")
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -140,7 +150,7 @@ func contact(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
-	tmpl.Execute(w, nil)
+	tmpl.Execute(w, Data)
 }
 
 func blog(w http.ResponseWriter, r *http.Request) {
@@ -213,6 +223,8 @@ func blogDetail(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	var Data = MetaData{}
+
 	var store = sessions.NewCookieStore([]byte("SESSION_KEY"))
 	session, _ := store.Get(r, "SESSION_KEY")
 
@@ -232,6 +244,12 @@ func blogDetail(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte("message : " + err.Error()))
 		return
+	}
+
+	if session.Values["IsLogin"] != true {
+		Data.IsLogin = false
+	} else {
+		Data.IsLogin = session.Values["IsLogin"].(bool)
 	}
 
 	// BlogDetail.Author = "Abel Dustin"
