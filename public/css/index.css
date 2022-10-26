@@ -16,6 +16,7 @@ nav {
     height: 10vh;
     background-color: white;
     box-shadow: 0 0 10px black;
+    justify-content: space-between;
 }
 
 nav ul {
@@ -40,11 +41,9 @@ nav ul li a {
 }
 
 .nav-left {
-    flex: 50%;
 }
 
 .nav-right {
-    flex: 50%;
     text-align: end;
     margin-right: 50px;
 }
