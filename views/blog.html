@@ -63,7 +63,7 @@
     {{range $index, $data := .Blogs}}
     <div class="blog-list-item">
       <div class="blog-image">
-        <img src="/public/assets/blog-img.png" alt="Pasar Coding di Indonesia Dinilai Masih Menjanjikan" />
+        <img src="/uploads/{{$data.Image}}" alt="Pasar Coding di Indonesia Dinilai Masih Menjanjikan" />
       </div>
       <div class="blog-content">
         {{if $data.IsLogin}}

@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"golang-c2/connection"
+	"golang-c2/middleware"
 	"html/template"
 	"log"
 	"net/http"
@@ -53,6 +54,7 @@ func main() {
 
 	// static folder
 	route.PathPrefix("/public/").Handler(http.StripPrefix("/public/", http.FileServer(http.Dir("./public/"))))
+	route.PathPrefix("/uploads/").Handler(http.StripPrefix("/uploads/", http.FileServer(http.Dir("./uploads/"))))
 
 	// routing
 	route.HandleFunc("/", helloWorld).Methods("GET")
@@ -60,7 +62,7 @@ func main() {
 	route.HandleFunc("/blog", blogs).Methods("GET")
 	route.HandleFunc("/blog/{id}", blogDetail).Methods("GET")
 	route.HandleFunc("/add-blog", formBlog).Methods("GET")
-	route.HandleFunc("/blog", addBlog).Methods("POST")
+	route.HandleFunc("/blog", middleware.UploadFile(addBlog)).Methods("POST")
 	route.HandleFunc("/delete-blog/{id}", deleteBlog).Methods("GET")
 
 	route.HandleFunc("/contact-me", contactMe).Methods("GET")
@@ -233,7 +235,10 @@ func addBlog(w http.ResponseWriter, r *http.Request) {
 	session, _ := store.Get(r, "SESSION_ID")
 	author := session.Values["Id"].(int)
 
-	_, err = connection.Conn.Exec(context.Background(), "INSERT INTO blog(title, content,image,author_id) VALUES ($1,$2,'image.png',$3)", title, content, author)
+	dataContex := r.Context().Value("dataFile")
+	image := dataContex.(string)
+
+	_, err = connection.Conn.Exec(context.Background(), "INSERT INTO blog(title, content,image,author_id) VALUES ($1,$2,$3,$4)", title, content, image, author)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte("message : " + err.Error()))
